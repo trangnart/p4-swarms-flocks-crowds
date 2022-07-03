@@ -3,22 +3,21 @@ let foods = [];
 
 function setup() {
   createCanvas(640, 360);
-  createP("Drag the mouse to generate new boids.");
+  createP("Click mouse to feed");
 
   flock = new Flock();
   // Add an initial set of boids into the system
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 20; i++) {
     let b = new Boid(width / 2,height / 2);
     flock.addBoid(b);
   }
 }
 
 function draw() {
-  background(51);
+  background(0,138,188);
   flock.run();
   for (let i = 0; i < foods.length; i++) {
     stroke(0, 255, 0);
-
     circle(foods[i].x, foods[i].y, 5);
   }
 }
@@ -121,20 +120,21 @@ Boid.prototype.seek = function(target) {
 
 Boid.prototype.render = function() {
   // Draw a triangle rotated in the direction of velocity
+  noStroke();
   let theta = this.velocity.heading() + radians(90);
-  fill(127);
-  stroke(200);
   push();
   translate(this.position.x, this.position.y);
   rotate(theta);
-  beginShape();
-  vertex(0, -this.r * 2);
-  vertex(-this.r-5, this.r * 2);
-  vertex(this.r+5, this.r * 2);
-  endShape(CLOSE);
-  ellipse(this.r-3.5, this.r-18, 15, 25);
+  stroke(229, 113, 67);
+  fill(186,60,48);
+  ellipse(this.r-3.5, this.r-17, 15, 30);
   fill(0);
-  circle(this.r-2, this.r-23, 4);
+  noStroke();
+  circle(this.r-2, this.r-24, 3);
+  fill(4,40,104);
+  stroke(88, 99, 162);
+  arc(this.r-5, this.r-3, 30, 30, 0, 5);
+  fill(0)
   pop();
 }
 
@@ -149,7 +149,7 @@ Boid.prototype.borders = function() {
 // Separation
 // Method checks for nearby boids and steers away
 Boid.prototype.separate = function(boids) {
-  let desiredseparation = 25.0;
+  let desiredseparation = 20.0;
   let steer = createVector(0, 0);
   let count = 0;
   // For every boid in the system, check if it's too close
