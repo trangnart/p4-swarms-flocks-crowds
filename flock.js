@@ -16,9 +16,19 @@ function setup() {
 function draw() {
   background(0,138,188);
   flock.run();
+
   for (let i = 0; i < foods.length; i++) {
     stroke(0, 255, 0);
     circle(foods[i].x, foods[i].y, 5);
+  }
+
+  for (let i = 0; i < flock.length; i++) {
+    var f = flock[i];
+    for (let j = 0; j < foods.length; j++) {
+      flock.attracted(foods[j]);
+    }
+    flock.update();
+    flock.show();
   }
 }
 
@@ -184,7 +194,7 @@ Boid.prototype.separate = function(boids) {
 // Alignment
 // For every nearby boid in the system, calculate the average velocity
 Boid.prototype.align = function(boids) {
-  let neighbordist = 50;
+  let neighbordist = 40;
   let sum = createVector(0,0);
   let count = 0;
   for (let i = 0; i < boids.length; i++) {
@@ -209,7 +219,7 @@ Boid.prototype.align = function(boids) {
 // Cohesion
 // For the average location (i.e. center) of all nearby boids, calculate steering vector towards that location
 Boid.prototype.cohesion = function(boids) {
-  let neighbordist = 50;
+  let neighbordist = 10;
   let sum = createVector(0, 0);   // Start with empty vector to accumulate all locations
   let count = 0;
   for (let i = 0; i < boids.length; i++) {
@@ -242,4 +252,18 @@ Boid.prototype.avoid = function(boids) {
     steer.add(createVector(0, -1));
   }
   return steer;
+}
+
+function attracted(target) {
+  // var dir = target - this.pos
+  var force = p5.Vector.sub(target, this.pos);
+  var d = force.mag();
+  d = constrain(d, 1, 25);
+  var G = 50;
+  var strength = G / (d * d);
+  force.setMag(strength);
+  if (d < 20) {
+    force.mult(-10);
+  }
+  this.acc.add(force);
 }
