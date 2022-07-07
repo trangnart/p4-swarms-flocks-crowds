@@ -1,5 +1,7 @@
-# Unhungry Beta
+# Hungry Beta
 
-*Description*: A school of beta fish that are not bother by foods.
+*Description*: A school of hungry fish waiting to feed with pellet.
+- Two additional objects: the pellet and the seaweed aquarium statue.
+- Two additional behaviors: attraction/fish swims toward pellet and repulsion/fish repel when hit the statue.
 
-*Artist statement*: I try to make the closest fish eat the green pellet when it drops in the tank. However, I didn't achieve it because the array make it difficult to control the fish's direction. To make my assignment make sense, I change the title name that fit with the situation.
+*Artist statement*: I did achieve the simulate a school of fish and the player's interaction with the scene by clicking mouse to drop a pellet. 

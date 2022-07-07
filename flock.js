@@ -17,19 +17,49 @@ function draw() {
   background(0,138,188);
   flock.run();
 
+  seaweed((width/2), height/2);
+
   for (let i = 0; i < foods.length; i++) {
-    stroke(0, 255, 0);
+    fill("#964b00");
     circle(foods[i].x, foods[i].y, 5);
   }
 
-  for (let i = 0; i < flock.length; i++) {
-    var f = flock[i];
+  for (let b = 0; b < flock.boids.length; b++) {
+    boid = flock.boids[b];
     for (let j = 0; j < foods.length; j++) {
-      flock.attracted(foods[j]);
+      boid.attract(j);
     }
-    flock.update();
-    flock.show();
   }
+}
+
+function seaweed(x, y){
+  fill("#918644");
+  ellipse(x+270, y-55, 11, 80);
+  ellipse(x+270, y-5, 20, 100);
+  ellipse(x+270, y+50, 30, 120);
+  ellipse(x+270, y+140, 45, 220);
+
+  fill("#54764b");
+  ellipse(x+235, y+130, 50, 170);
+  ellipse(x+235, y+45, 30, 130);
+  ellipse(x+235, y, 15, 90);
+
+  fill("#2f4c1c");
+  ellipse(x+300, y-20, 15, 100);
+  ellipse(x+300, y+40, 30, 150);
+  ellipse(x+300, y+120, 50, 200);
+
+  ellipse(x+200, y-80, 20, 150);
+  ellipse(x+200, y, 35, 200);
+  ellipse(x+200, y+100, 60, 250);
+
+  fill("#6e8234");
+  ellipse(x+255, y+60, 10, 30);
+  ellipse(x+255, y+90, 20, 60);
+  ellipse(x+255, y+130, 35, 80);
+
+  fill("#5b3e31");
+  ellipse(x+250, y+180, 200, 80);
 }
 
 function mousePressed() {
@@ -242,7 +272,7 @@ Boid.prototype.avoid = function(boids) {
   if (this.position.x <= 0) {
     steer.add(createVector(1, 0));
   }
-  if (this.position.x > 640) { // width of canvas
+  if (this.position.x > 480) { // width of canvas
     steer.add(createVector(-1, 0));
   }
   if (this.position.y <= 0) {
@@ -254,16 +284,17 @@ Boid.prototype.avoid = function(boids) {
   return steer;
 }
 
-function attracted(target) {
-  // var dir = target - this.pos
-  var force = p5.Vector.sub(target, this.pos);
-  var d = force.mag();
-  d = constrain(d, 1, 25);
-  var G = 50;
-  var strength = G / (d * d);
-  force.setMag(strength);
-  if (d < 20) {
-    force.mult(-10);
+function inVicinity(coord, area) {
+  return (coord > area - 20 && coord < area + 20);
+}
+
+Boid.prototype.attract = function(index) {
+  this.applyForce(this.seek(foods[index]));
+
+  const {x,y} = foods[index];
+
+  if (inVicinity(x,Math.trunc(this.position.x))
+  && inVicinity(y,Math.trunc(this.position.y))) {
+    foods.splice(index, 1);
   }
-  this.acc.add(force);
 }
